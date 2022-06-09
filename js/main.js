@@ -12,15 +12,19 @@ const margin = {
   bottom: 0,
 };
 
+let listOfSources = [
+  "https://raw.githubusercontent.com/juweek/datasets/main/FastFoodRestaurantData.csv",
+  "https://raw.githubusercontent.com/juweek/datasets/main/FastFoodRestaurantData.csv",
+  "https://raw.githubusercontent.com/juweek/datasets/main/FastFoodRestaurantData.csv"
+]
+
 /*
 ------------------------------
 METHOD: fetch the data and draw the chart 
 ------------------------------
 */
-function update(svg, us, radius) {
-  d3.csv(
-    "https://raw.githubusercontent.com/juweek/datasets/main/FastFoodRestaurantData.csv"
-  ).then(function (data) {
+function update(svg, url) {
+  d3.csv(url).then(function (data) {
     // D3 Projection
     var projection = d3
       .geoAlbersUsa()
@@ -41,74 +45,11 @@ function update(svg, us, radius) {
       .attr("transform", function (d) {
         return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
       })
-      /*
-      .attr("cx", function (d) {
-        let currentProject = projection([d.Longitude, d.Latitude]);
-        if (currentProject != null) {
-          return currentProject[0];
-        } else {
-          return 0;
-        }
-      })
-      .attr("cy", function (d) {
-        let currentProject = projection([d.Longitude, d.Latitude]);
-        if (currentProject != null) {
-          return currentProject[1];
-        } else {
-          return 0;
-        }
-      })
-	  */
       .attr("r", function (d) {
         return 3;
       })
       .style("fill", "#FEDF70")
       .style("opacity", 0.55);
-
-    // the text for the key
-    var legendText = ["Cities Lived", "States Lived", "States Visited", "Nada"];
-
-    // Define linear scale for output
-    var color = d3.scaleLinear()
-      .range([
-        "rgb(213,222,217)",
-        "rgb(69,173,168)",
-        "rgb(84,36,55)",
-        "rgb(217,91,67)",
-      ]);
-
-    color.domain([0, 1, 2, 3]); // setting the range of the input data
-
-    // Create legend
-    var legend = d3
-      .select("#svganchor")
-      .append("svg")
-      .attr("class", "legend")
-      .attr("width", 140)
-      .attr("height", 200)
-      .selectAll("g")
-      .data(color.domain().slice().reverse())
-      .enter()
-      .append("g")
-      .attr("transform", function (d, i) {
-        return "translate(0," + i * 20 + ")";
-      });
-
-    legend
-      .append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", color);
-
-    legend
-      .append("text")
-      .data(legendText)
-      .attr("x", 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .text(function (d) {
-        return d;
-      });
   });
 }
 
@@ -117,6 +58,7 @@ function update(svg, us, radius) {
 METHOD: load in the map
 ------------------------------
 */
+
 d3.json(
   "https://raw.githubusercontent.com/xuanyoulim/fcc-internet-complaints-map/master/counties-albers-10m.json"
 )
@@ -144,17 +86,7 @@ d3.json(
       .attr("stroke-linejoin", "round")
       .attr("d", path);
 
-    // for circle
-    svg
-      .append("g")
-      .attr("fill", "brown")
-      .attr("fill-opacity", 0.5)
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 0.5);
-
-    radius = d3.scaleSqrt([450, 1100], [0, 45]);
-
-    update(svg, us, radius);
+    update(svg, listOfSources[0]);
   })
   .catch(function (error) {
     console.log(error);
