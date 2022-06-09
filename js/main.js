@@ -19,10 +19,40 @@ let listOfSources = [
 ];
 
 let listOfColors = [
-  ["E18A86","844440","FEDF70"],
-  ["0E68B0","fff","EB7921"],
-  ["7A69A1","fff","FDBFD6"]
+  ["E18A86", "844440", "FEDF70"],
+  ["0E68B0", "fff", "EB7921"],
+  ["7A69A1", "fff", "FDBFD6"],
 ];
+
+var svgElement = document.getElementById("svgMapContainer");
+var buttonElements = document.querySelectorAll(".buttonsContainer button");
+var chartElements = document.querySelectorAll(".graph");
+
+/*
+------------------------------
+METHOD: button click interaction
+------------------------------
+*/
+buttonElements.forEach((element) =>
+  element.addEventListener("click", (event) => {
+    buttonElements.forEach((button) => {
+      button.classList.remove("active");
+    });
+
+    let currentFilter = event.target.dataset.filter;
+    console.log("yerrr");
+
+    chartElements.forEach((chart) => {
+      if (currentFilter == chart.dataset.chart) {
+        chart.classList.add("selected");
+      } else {
+        chart.classList.remove("selected");
+      }
+    });
+
+    event.target.classList.add("active");
+  })
+);
 
 /*
 ------------------------------
@@ -49,23 +79,24 @@ function update(svg, url, x) {
       .append("circle")
       .attr("class", "franchiseCircle")
       .attr("transform", function (d) {
-        return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
+        if (projection([d.Longitude, d.Latitude]) != null) {
+          return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
+        }
       })
       .attr("r", function (d) {
         return 3;
       })
-      .style("fill", '#' + listOfColors[x][2])
+      .style("fill", "#" + listOfColors[x][2])
       .style("opacity", 0.55);
   });
 }
 
-for (let x = 0; x < listOfSources.length; x++) {
-  /*
+/*
 ------------------------------
 METHOD: load in the map
 ------------------------------
 */
-
+for (let x = 0; x < listOfSources.length; x++) {
   d3.json(
     "https://raw.githubusercontent.com/xuanyoulim/fcc-internet-complaints-map/master/counties-albers-10m.json"
   )
@@ -81,7 +112,7 @@ METHOD: load in the map
       svg
         .append("path")
         .datum(topojson.feature(us, us.objects.nation))
-        .attr("fill", '#' + listOfColors[x][0])
+        .attr("fill", "#" + listOfColors[x][0])
         .attr("d", path);
 
       // outline state border
@@ -89,7 +120,7 @@ METHOD: load in the map
         .append("path")
         .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
         .attr("fill", "none")
-        .attr("stroke", '#' + listOfColors[x][1])
+        .attr("stroke", "#" + listOfColors[x][1])
         .attr("stroke-linejoin", "round")
         .attr("d", path);
 

@@ -7,11 +7,17 @@
   </head>
 
   <body style="margin-top: 20px">
+    <div class="buttonsContainer">
+      <button class="active" data-filter="mcdonalds">McDonald's</button>
+      <button data-filter="burgerking" class="">Burger King</button>
+      <button data-filter="tacobell" class="">Taco Bell</button>
+    </div>
 
-    <div id="svganchor0" class="graph centered"></div>
-    <div id="svganchor1" class="graph centered"></div>
-    <div id="svganchor2" class="graph centered"></div>
-    <div id="svganchor3" class="graph centered"></div>
+    <section class="svgMapContainer">
+      <div id="svganchor0" class="graph centered selected" data-chart="mcdonalds"></div>
+      <div id="svganchor1" class="graph centered" data-chart="burgerking"></div>
+      <div id="svganchor2" class="graph centered" data-chart="tacobell"></div>
+    </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.1.1/d3.min.js"></script>
     <script src="https://unpkg.com/topojson-client@3"></script>
