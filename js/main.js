@@ -15,15 +15,21 @@ const margin = {
 let listOfSources = [
   "https://raw.githubusercontent.com/juweek/datasets/main/FastFoodRestaurantData.csv",
   "https://raw.githubusercontent.com/juweek/datasets/main/FastFoodRestaurantData.csv",
-  "https://raw.githubusercontent.com/juweek/datasets/main/FastFoodRestaurantData.csv"
-]
+  "https://raw.githubusercontent.com/juweek/datasets/main/FastFoodRestaurantData.csv",
+];
+
+let listOfColors = [
+  ["E18A86","844440","FEDF70"],
+  ["0E68B0","fff","EB7921"],
+  ["7A69A1","fff","FDBFD6"]
+];
 
 /*
 ------------------------------
 METHOD: fetch the data and draw the chart 
 ------------------------------
 */
-function update(svg, url) {
+function update(svg, url, x) {
   d3.csv(url).then(function (data) {
     // D3 Projection
     var projection = d3
@@ -48,46 +54,48 @@ function update(svg, url) {
       .attr("r", function (d) {
         return 3;
       })
-      .style("fill", "#FEDF70")
+      .style("fill", '#' + listOfColors[x][2])
       .style("opacity", 0.55);
   });
 }
 
-/*
+for (let x = 0; x < listOfSources.length; x++) {
+  /*
 ------------------------------
 METHOD: load in the map
 ------------------------------
 */
 
-d3.json(
-  "https://raw.githubusercontent.com/xuanyoulim/fcc-internet-complaints-map/master/counties-albers-10m.json"
-)
-  .then(function (us) {
-    path = d3.geoPath();
+  d3.json(
+    "https://raw.githubusercontent.com/xuanyoulim/fcc-internet-complaints-map/master/counties-albers-10m.json"
+  )
+    .then(function (us) {
+      path = d3.geoPath();
 
-    const svg = d3
-      .select("#svganchor")
-      .append("svg")
-      .attr("viewBox", [0, 0, 975, 610]);
+      const svg = d3
+        .select("#svganchor" + x)
+        .append("svg")
+        .attr("viewBox", [0, 0, 975, 610]);
 
-    // outline us map
-    svg
-      .append("path")
-      .datum(topojson.feature(us, us.objects.nation))
-      .attr("fill", "#E1A3A0")
-      .attr("d", path);
+      // outline us map
+      svg
+        .append("path")
+        .datum(topojson.feature(us, us.objects.nation))
+        .attr("fill", '#' + listOfColors[x][0])
+        .attr("d", path);
 
-    // outline state border
-    svg
-      .append("path")
-      .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-      .attr("fill", "none")
-      .attr("stroke", "#844440")
-      .attr("stroke-linejoin", "round")
-      .attr("d", path);
+      // outline state border
+      svg
+        .append("path")
+        .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
+        .attr("fill", "none")
+        .attr("stroke", '#' + listOfColors[x][1])
+        .attr("stroke-linejoin", "round")
+        .attr("d", path);
 
-    update(svg, listOfSources[0]);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+      update(svg, listOfSources[x], x);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
