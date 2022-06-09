@@ -24,7 +24,7 @@ function update(svg, us, radius) {
     // D3 Projection
     var projection = d3
       .geoAlbersUsa()
-	  .translate([width / 2.65, height / 2.65]) // translate to center of screen
+      .translate([width / 2.65, height / 2.65]) // translate to center of screen
       .scale([1300]); // scale things down so see entire US
 
     // Define path generator
@@ -38,8 +38,10 @@ function update(svg, us, radius) {
       .enter()
       .append("circle")
       .attr("class", "franchiseCircle")
-	  .attr("transform", function(d) {return "translate(" + projection([d.Longitude, d.Latitude]) + ")";})
-	  /*
+      .attr("transform", function (d) {
+        return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
+      })
+      /*
       .attr("cx", function (d) {
         let currentProject = projection([d.Longitude, d.Latitude]);
         if (currentProject != null) {
@@ -60,8 +62,53 @@ function update(svg, us, radius) {
       .attr("r", function (d) {
         return 3;
       })
-      .style("fill", "rgb(217,91,67)")
+      .style("fill", "#FEDF70")
       .style("opacity", 0.55);
+
+    // the text for the key
+    var legendText = ["Cities Lived", "States Lived", "States Visited", "Nada"];
+
+    // Define linear scale for output
+    var color = d3.scaleLinear()
+      .range([
+        "rgb(213,222,217)",
+        "rgb(69,173,168)",
+        "rgb(84,36,55)",
+        "rgb(217,91,67)",
+      ]);
+
+    color.domain([0, 1, 2, 3]); // setting the range of the input data
+
+    // Create legend
+    var legend = d3
+      .select("#svganchor")
+      .append("svg")
+      .attr("class", "legend")
+      .attr("width", 140)
+      .attr("height", 200)
+      .selectAll("g")
+      .data(color.domain().slice().reverse())
+      .enter()
+      .append("g")
+      .attr("transform", function (d, i) {
+        return "translate(0," + i * 20 + ")";
+      });
+
+    legend
+      .append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+    legend
+      .append("text")
+      .data(legendText)
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(function (d) {
+        return d;
+      });
   });
 }
 
@@ -85,7 +132,7 @@ d3.json(
     svg
       .append("path")
       .datum(topojson.feature(us, us.objects.nation))
-      .attr("fill", "#ccc")
+      .attr("fill", "#E1A3A0")
       .attr("d", path);
 
     // outline state border
@@ -93,7 +140,7 @@ d3.json(
       .append("path")
       .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
       .attr("fill", "none")
-      .attr("stroke", "white")
+      .attr("stroke", "#844440")
       .attr("stroke-linejoin", "round")
       .attr("d", path);
 
@@ -106,36 +153,6 @@ d3.json(
       .attr("stroke-width", 0.5);
 
     radius = d3.scaleSqrt([450, 1100], [0, 45]);
-
-    // Create tooltip div and make it invisible
-    let tooltip = d3
-      .select("#svganchor")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-
-    d3.selectAll("circle")
-      .on("mousemove", function (d) {
-        tooltip
-          .html(
-            `<strong>$${d.target.__data__.id}</strong><br>
-					  <strong>Population: </strong>${d.target.__data__.population}`
-          )
-          .style("top", d.pageY - 12 + "px")
-          .style("left", d.pageX + 25 + "px")
-          .style("opacity", 0.9);
-
-        xLine
-          .attr("x1", d3.select(this).attr("cx"))
-          .attr("y1", d3.select(this).attr("cy"))
-          .attr("y2", height - margin.bottom)
-          .attr("x2", d3.select(this).attr("cx"))
-          .attr("opacity", 1);
-      })
-      .on("mouseout", function (_) {
-        tooltip.style("opacity", 0);
-        xLine.attr("opacity", 0);
-      });
 
     update(svg, us, radius);
   })

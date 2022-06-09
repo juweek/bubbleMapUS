@@ -3,3 +3,21 @@
 no CSS for right now
 ------------------------------
 */
+.key_block {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .key_break {
+    height: 30px;
+    width: 30px;
+    margin: 2px 2px;
+    border-radius: 20px;
+  }
+  
+  #keyContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
