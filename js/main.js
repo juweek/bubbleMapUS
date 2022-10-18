@@ -90,7 +90,7 @@ d3.json("https://raw.githubusercontent.com/xuanyoulim/fcc-internet-complaints-ma
 		.attr("stroke", "#fff")
 		.attr("stroke-width", 0.5)
 
-	radius = d3.scaleSqrt([0, 0.001], [0, 15]);
+	radius = d3.scaleSqrt([0, 0.001], [10, 15]);
 
 	const legend = svg.append("g")
 	.attr("fill", "#777")
